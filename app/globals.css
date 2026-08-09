@@ -1,0 +1,304 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --panel: #f9fafb;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --text: #0f172a;
+  --muted: #64748b;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: #eef2ff;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: #c7d2fe;
+  color: #1e1b4b;
+}
+
+@layer components {
+  /* L1 — primary card: a white surface lifted off the page with a hairline
+   * border and a soft shadow. */
+  .glass {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -12px rgba(15, 23, 42, 0.08);
+  }
+
+  /* L2 — nested panel */
+  .glass-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  /* Small pill (chips, toggles, tags) */
+  .frost {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 8px;
+    transition: all 0.15s ease;
+  }
+  .frost:hover {
+    background: #e9edf3;
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+
+  /* Inputs / textareas */
+  .field {
+    background: #ffffff;
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    border-radius: 8px;
+    transition: all 0.15s ease;
+  }
+  .field::placeholder {
+    color: #9aa5b1;
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+  }
+
+  /* Primary Button */
+  .btn-primary {
+    color: #ffffff;
+    background: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.18s;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+  .btn-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  /* Ghost Button */
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 8px;
+    transition: all 0.18s;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: #f1f5f9;
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+  .btn-ghost:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(100deg, #4f46e5 0%, #7c3aed 55%, #6366f1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Inline-editable text on the resume. In edit mode fields get a soft hover
+ * tint and a focus ring; empty fields show their placeholder. Screen-only —
+ * never printed. */
+.editable {
+  border-radius: 3px;
+  transition: background 0.12s, box-shadow 0.12s;
+  cursor: text;
+}
+.editable:hover {
+  background: rgba(79, 70, 229, 0.07);
+}
+.editable:focus {
+  outline: none;
+  background: rgba(79, 70, 229, 0.08);
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.35);
+}
+.editable[data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #c3c9d4;
+}
+@media print {
+  .editable:hover,
+  .editable:focus {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+  .editable[data-placeholder]:empty::before {
+    content: "" !important;
+  }
+}
+
+/* Thin, on-theme scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.28);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(79, 70, 229, 0.5);
+  background-clip: padding-box;
+}
+
+/* Print / Download: ONLY the résumé prints. Everything else is display:none so
+ * it contributes NO layout height (a visibility-hidden approach leaves the tall
+ * app content in flow and produces blank trailing pages). The résumé then flows
+ * in normal document order, breaking cleanly across its own 1-2 pages. */
+@media print {
+  @page {
+    margin: 8mm 0;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  /* Hide all app chrome (navbar, panels, toolbars, side panel, buttons). */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Remove the page container's own padding so the résumé isn't offset. */
+  .print-root {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Neutralise the on-screen card shell wrapped around the résumé. */
+  .resume-shell {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+  }
+  .resume-sheet {
+    display: block !important;
+    margin: 0 !important;
+    padding: 12mm 15mm !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: #fff !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Keep entries and bullets from splitting awkwardly across pages. */
+  .resume-entry {
+    break-inside: avoid;
+  }
+  .resume-sheet li {
+    break-inside: avoid;
+  }
+
+  /* Uploaded reconstruction: real size, no scale transform, no clipping. */
+  .resume-sheet.print-exact {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  .upl-scale {
+    transform: none !important;
+  }
+  .upl-wrap {
+    height: auto !important;
+    overflow: visible !important;
+  }
+}
+
+/* ---- Aesthetic "generating" loader animations ---- */
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-140%) skewX(-12deg);
+  }
+  100% {
+    transform: translateX(240%) skewX(-12deg);
+  }
+}
+@keyframes line-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scaleX(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+@keyframes indeterminate {
+  0% {
+    left: -35%;
+    width: 35%;
+  }
+  50% {
+    width: 55%;
+  }
+  100% {
+    left: 100%;
+    width: 35%;
+  }
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
